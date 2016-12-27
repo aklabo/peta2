@@ -67,73 +67,8 @@
 		<!-- script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script -->
 
 		<script>
-		function _load_boxes() {
-			// none
-		}
-
 		function _onload_document() {
 
-			_load_boxes();
-		}
-
-		var dragging_position = null;
-
-		function _on_begindrag_canvas() {
-
-			// alert("MOUSE: [x=" + window.event.x + ",y=" + window.event.y + "]");
-
-			//
-			// detecting canvas position.
-			//
-			var canvas = document.getElementById("div-canvas");
-			if (canvas == null)
-				return;
-
-			// alert("canvas.style.left=" + canvas.style.left + ", canvas.style.top=" + canvas.style.top);
-
-			var canvas_position = {
-				x: canvas.offsetLeft,
-				y: canvas.offsetTop
-			};
-
-			// alert("canvas.left=" + canvas_position.x + ", canvas.top=" + canvas_position.y);
-
-			dragging_position = {
-				x: window.event.x - canvas_position.x,
-				y: window.event.y - canvas_position.y
-			};
-
-			dragging_position = {
-				x: window.event.x,
-				y: window.event.y
-			};
-		}
-
-		function _show_inputbox() {
-
-			$("#myModal").modal("show");
-		}
-
-		function _show_inputbox_x() {
-
-			var inputbox = document.getElementById("div-input-box");
-			if (inputbox == null)
-				return;
-			var left = ($(window).width() - $("#div-input-box").width()) / 2.0;
-			var top = ($(window).height() - $("#div-input-box").height()) / 2.0;
-			inputbox.style.left = "" + left + "px";
-			inputbox.style.top = "" + top + "px";
-			inputbox.style.visibility = "visible";
-			return true;
-		}
-
-		function _on_dragend_canvas() {
-
-			if(dragging_position == null)
-				return;
-			var current_position = {x: window.event.x, y: window.event.y};
-			if (!_show_inputbox())
-				return;
 		}
 
 		function _onclick_text_cancel() {
@@ -144,14 +79,6 @@
 		function _hide_inputbox() {
 
 			$("#myModal").modal("hide");
-		}
-
-		function _hide_inputbox_xxx() {
-
-			var inputbox = document.getElementById("div-input-box");
-			if (inputbox == null)
-				return;
-			inputbox.style.visibility = "hidden";
 		}
 
 		function _pop_comment_value() {
@@ -193,15 +120,7 @@
 
 			_hide_inputbox();
 
-			if (dragging_position == null) {
-				alert("ASSERTION FAILURE");
-				return;
-			}
-
-			_create_new_box(
-					dragging_position.x,
-					dragging_position.y,
-					_pop_comment_value());
+			// _create_new_box();
 		}
 		</script>
 	</head>
@@ -223,8 +142,8 @@
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
-							<li class="active"><a href="#">Home</a></li>
-							<li class="inactive"><a href="/preferences">Preferences</a></li>
+							<li class="inactive"><a href="/dashboard">Home</a></li>
+							<li class="active"><a href="/preferences">Preferences</a></li>
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown"
 										role="button" aria-haspopup="true"
@@ -248,18 +167,7 @@
 			<!-- Main Content -->
 			<!-- ========================================================== -->
  			<div class="container theme-showcase" role="main">
-				<div id="div-canvas" class="div-canvas" onmouseup="javascript: _on_dragend_canvas();" onmousedown="javascript: _on_begindrag_canvas();">
-				</div>
-			</div>
-
-			<!-- ========================================================== -->
-			<!-- Modal Sample -->
-			<!-- ========================================================== -->
-			<div id="div-input-box" class="div-input-box">
-				コメント: <input type="text" name="txt-content" class="txt-content">
-				<br>
-				<button type="button" class="btn btn-sm btn-default" onclick="javascript: _on_click_apply();">apply</button>
-				<button type="button" class="btn btn-sm btn-default" onclick="javascript: _onclick_text_cancel();">cancel</button>
+ 				<div class="well"></div>
 			</div>
 
 			<!-- ========================================================== -->
@@ -304,3 +212,4 @@
 		</form>
 	</body>
 </html>
+
