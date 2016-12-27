@@ -5,7 +5,10 @@
 
 #Getting Started
 
+- In case of EC2.
+
 ```
+$ sudo yum install nodejs npm --enablerepo=epel
 $ git clone https://github.com/aklabo/peta2.git
 $ cd peta2/app
 $ ./run-server.sh
