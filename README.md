@@ -6,7 +6,7 @@
 #Getting Started
 
 ```
-$ git clone git@github.com:aklabo/peta2.git
+$ git clone https://github.com/aklabo/peta2.git
 $ cd peta2/app
 $ ./run-server.sh
 ```
