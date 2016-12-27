@@ -2,6 +2,7 @@
 
 - A simple application with Node.js + express + ejs.
 - Any kind of contribution will be welcomed by anyone in this organization.
+- WebSocket をなんとかする予定...
 
 #Getting Started
 
