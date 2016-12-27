@@ -5,13 +5,21 @@ function _startup() {
 
 }
 
-function handler_template_example1(req, res, next) {
+function handler_template_dashboard(req, res, next) {
 
-	//
-	// テンプレートファイルを利用してコンテンツを返却します。
-	//
 	var content = {name: "中臣鎌足"};
 	res.render("dashboard.ejs", content);
+}
+
+function handler_template_preferences(req, res, next) {
+
+	var content = {name: "中臣鎌足"};
+	res.render("preferences.ejs", content);
+}
+
+function handler_simple_root(req, res, next) {
+
+	res.redirect("/dashboard");
 }
 
 function handler_simple_json(req, res, next) {
@@ -44,8 +52,10 @@ function main() {
 	//
 	// routing
 	//
+	app.get("/", handler_simple_root);
 	app.get("/hello", handler_simple_json);
-	app.get("/example1", handler_template_example1);
+	app.get("/dashboard", handler_template_dashboard);
+	app.get("/preferences", handler_template_preferences);
 }
 
 main();
