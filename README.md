@@ -1,4 +1,4 @@
 # peta2
 
-- Node.js でぺたぺたしてみる
+- Any contribution will be welcomed from anyone in this organization.
 
