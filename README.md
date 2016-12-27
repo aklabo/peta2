@@ -1,4 +1,4 @@
 # peta2
 
-- Any contribution will be welcomed from anyone in this organization.
-
+- PETA PETA application with Node.js
+- Any kind of contribution will be welcomed by anyone in this organization.
