@@ -38,24 +38,32 @@ function handler_simple_json(req, res, next) {
 
 function main() {
 
-	//
-	// setup
-	//
 	var express = require("express");
 	var ejs_template_engine = require("ejs")
 	var app = express();
-	app.set('view engine', 'ejs')
-	var server = app.listen(8080, _startup);
+	app.set('view engine', 'ejs');
+	var http = require('http').Server(app);
+	var io = require('socket.io')(http);
 
-	console.log("Node.js is listening to port: " + server.address().port);
-
-	//
-	// routing
-	//
 	app.get("/", handler_simple_root);
 	app.get("/hello", handler_simple_json);
 	app.get("/dashboard", handler_template_dashboard);
 	app.get("/preferences", handler_template_preferences);
+
+	io.on('connection', function(socket) {
+		console.log('[TRACE] Welcome! << (ﾟ _ﾟ )))');
+		socket.on('disconnect', function() {
+			console.log('[TRACE] Bye... >> ((( ﾟ_ ﾟ)');
+		});
+		socket.on('chat message', function(m) {
+			console.log('[TRACE] caught message: {x:' + m.x +", y:" + m.y + ", text:" + m.text + "} << (PEER)");
+			console.log('[TRACE] BROADCAST! >> (EVERYONE)');
+			io.emit('chat message', m);
+		});
+	});
+
+	var server = http.listen(8080, _startup);
+	console.log("Node.js is listening to port: " + server.address().port);
 }
 
 main();

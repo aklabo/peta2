@@ -66,12 +66,27 @@
 		<!-- script src="https://unpkg.com/react@15/dist/react.min.js"></script -->
 		<!-- script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script -->
 
+		<!-- Socket.IO CDN -->
+		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
 		<script>
+
+		var __websocket = null;
+
 		function _load_boxes() {
-			// none
+
+			// none.
 		}
 
 		function _onload_document() {
+
+			// Open a connection
+			__websocket = io();
+			// socket.on('chat message', function(m){
+			__websocket.on('chat message', function(m) {
+				// alert(JSON.stringify(m));
+				_create_new_box(m.x, m.y, m.text);
+			});
 
 			_load_boxes();
 		}
@@ -161,6 +176,15 @@
 			return comment;
 		}
 
+		function _broadcast_message(x, y, text) {
+			// var text = $('#m').val();
+			// socket.emit('chat message', text);
+			__websocket.emit('chat message', {x: x, y: y, text: text});
+			// erase
+			// $('#m').val('');
+			return false;
+		}
+
 		function _create_new_box(x, y, text) {
 
 			var new_element = document.createElement('DIV');
@@ -191,13 +215,23 @@
 
 		function _on_click_apply() {
 
+			// 入力ボックスを隠します。
 			_hide_inputbox();
 
+			// ドラッグ開始位置を調べています。予期しない状態のときは現在の操作をキャンセルしています。
 			if (dragging_position == null) {
 				alert("ASSERTION FAILURE");
 				return;
 			}
 
+			// 入力情報をサーバーへ通知します。
+			_broadcast_message(
+					dragging_position.x,
+					dragging_position.y,
+					_pop_comment_value());
+			return;
+
+			// 新しい箱を貼りつけます。
 			_create_new_box(
 					dragging_position.x,
 					dragging_position.y,
