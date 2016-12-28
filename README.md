@@ -1,8 +1,7 @@
 # peta2
 
-- A simple application with Node.js + express + ejs.
+- A simple interactive application with Node.js + express + ejs + Socket.IO.
 - Any kind of contribution will be welcomed by anyone in this organization.
-- WebSocket をなんとかする予定...
 
 #Getting Started
 
