@@ -29,7 +29,7 @@ http://www.embeddedjs.com
 
 #Socket.IO
 
-- WebSocket implements with Node.js.
+- Easy WebSocket implementation for Node.js.
 
 http://socket.io
 
