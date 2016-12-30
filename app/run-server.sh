@@ -1,2 +1,1 @@
-npm install
-sudo node index.js
+nohup sudo node index.js &
