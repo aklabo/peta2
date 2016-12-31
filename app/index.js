@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+// coding: utf-8
 
 function _startup() {
 
@@ -86,5 +88,4 @@ function main() {
 	console.log("Node.js is listening to port: " + server.address().port);
 }
 
-main();
-
+main(process.argv);
