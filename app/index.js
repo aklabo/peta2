@@ -34,6 +34,27 @@ function handler_simple_json(req, res, next) {
 	res.json(content);
 }
 
+function _load_json_file(path) {
+
+	require("json");
+	var fs = require("fs");
+	return JSON.parse(fs.readFileSync(path, "utf8"));
+	return "" + fs.readFileSync(path, "utf8");
+}
+
+function handler_load_boxex(req, res, next) {
+
+	try {
+		var json = _load_json_file("/tmp/.peta2-boxes-data.json");
+		res.json(json);
+	}
+	catch (err) {
+		console.log(err);
+		console.log("[ERROR] json データの読み込みに失敗しています。");
+		res.json({});
+	}
+}
+
 function main() {
 
 	var express = require("express");
@@ -47,6 +68,7 @@ function main() {
 	app.get("/hello", handler_simple_json);
 	app.get("/dashboard", handler_template_dashboard);
 	app.get("/preferences", handler_template_preferences);
+	app.get("/boxes", handler_load_boxex);
 
 	io.on('connection', function(socket) {
 		console.log('[TRACE] Welcome! << (ﾟ _ﾟ )))');

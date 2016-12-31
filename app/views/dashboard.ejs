@@ -75,7 +75,22 @@
 
 		function _load_boxes() {
 
-			// none.
+			var request = {
+				type: 'GET',
+				data: JSON.stringify({}),
+				contentType: 'application/json',
+				url: '/boxes',						
+				success: function(data) {
+					console.log('success');
+					console.log(JSON.stringify(data));
+					$.each (data["data"], function(i, e) {
+						console.log(e);
+						_create_new_box(e.x, e.y, e.text);
+					});
+				}
+			}
+
+			$.ajax(request);
 		}
 
 		function _onload_document() {

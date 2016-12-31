@@ -1,1 +1,2 @@
-nohup sudo node index.js &
+node index.js
+
