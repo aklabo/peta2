@@ -79,7 +79,7 @@
 				type: 'GET',
 				data: JSON.stringify({}),
 				contentType: 'application/json',
-				url: '/boxes',						
+				url: '/boxes',
 				success: function(data) {
 					console.log('success');
 					console.log(JSON.stringify(data));
@@ -95,22 +95,19 @@
 
 		function _onload_document() {
 
-			// Open a connection
+			// Socket.IO による双方向通信を開始します。
 			__websocket = io();
-			// socket.on('chat message', function(m){
 			__websocket.on('chat message', function(m) {
-				// alert(JSON.stringify(m));
 				_create_new_box(m.x, m.y, m.text);
 			});
 
+			// コメントをロードします。
 			_load_boxes();
 		}
 
 		var dragging_position = null;
 
 		function _on_begindrag_canvas() {
-
-			// alert("MOUSE: [x=" + window.event.x + ",y=" + window.event.y + "]");
 
 			//
 			// detecting canvas position.
@@ -119,14 +116,10 @@
 			if (canvas == null)
 				return;
 
-			// alert("canvas.style.left=" + canvas.style.left + ", canvas.style.top=" + canvas.style.top);
-
 			var canvas_position = {
 				x: canvas.offsetLeft,
 				y: canvas.offsetTop
 			};
-
-			// alert("canvas.left=" + canvas_position.x + ", canvas.top=" + canvas_position.y);
 
 			dragging_position = {
 				x: window.event.x - canvas_position.x,
@@ -142,19 +135,6 @@
 		function _show_inputbox() {
 
 			$("#myModal").modal("show");
-		}
-
-		function _show_inputbox_x() {
-
-			var inputbox = document.getElementById("div-input-box");
-			if (inputbox == null)
-				return;
-			var left = ($(window).width() - $("#div-input-box").width()) / 2.0;
-			var top = ($(window).height() - $("#div-input-box").height()) / 2.0;
-			inputbox.style.left = "" + left + "px";
-			inputbox.style.top = "" + top + "px";
-			inputbox.style.visibility = "visible";
-			return true;
 		}
 
 		function _on_dragend_canvas() {
@@ -174,14 +154,6 @@
 		function _hide_inputbox() {
 
 			$("#myModal").modal("hide");
-		}
-
-		function _hide_inputbox_xxx() {
-
-			var inputbox = document.getElementById("div-input-box");
-			if (inputbox == null)
-				return;
-			inputbox.style.visibility = "hidden";
 		}
 
 		function _pop_comment_value() {
@@ -214,20 +186,6 @@
 			canvas.appendChild(new_element);
 		}
 
-		function _create_new_box_x(x, y, text) {
-
-			var new_element = document.createElement('DIV');
-			new_element.id = "";
-			new_element.innerHTML = text;
-			new_element.className = "div-box";
-			new_element.style.left = "" + x + "px";
-			new_element.style.top = "" + y + "px";
-			var canvas = document.getElementById("div-canvas");
-			if (canvas == null)
-				return;
-			canvas.appendChild(new_element);
-		}
-
 		function _on_click_apply() {
 
 			// 入力ボックスを隠します。
@@ -241,13 +199,6 @@
 
 			// 入力情報をサーバーへ通知します。
 			_broadcast_message(
-					dragging_position.x,
-					dragging_position.y,
-					_pop_comment_value());
-			return;
-
-			// 新しい箱を貼りつけます。
-			_create_new_box(
 					dragging_position.x,
 					dragging_position.y,
 					_pop_comment_value());
@@ -268,7 +219,7 @@
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="#">ぺたぺたするやつ</a>
+						<a class="navbar-brand" href="/">ぺたぺたするやつ</a>
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">

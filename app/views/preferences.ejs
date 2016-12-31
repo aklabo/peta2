@@ -67,61 +67,6 @@
 		<!-- script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script -->
 
 		<script>
-		function _onload_document() {
-
-		}
-
-		function _onclick_text_cancel() {
-
-			_hide_inputbox();
-		}
-
-		function _hide_inputbox() {
-
-			$("#myModal").modal("hide");
-		}
-
-		function _pop_comment_value() {
-
-			var comment = $("#comment").val();
-			$("#comment").val("");
-			return comment;
-		}
-
-		function _create_new_box(x, y, text) {
-
-			var new_element = document.createElement('DIV');
-			new_element.id = "";
-			new_element.innerHTML = text;
-			new_element.className = "well div-box";
-			new_element.style.left = "" + x + "px";
-			new_element.style.top = "" + y + "px";
-			var canvas = document.getElementById("div-canvas");
-			if (canvas == null)
-				return;
-			canvas.appendChild(new_element);
-		}
-
-		function _create_new_box_x(x, y, text) {
-
-			var new_element = document.createElement('DIV');
-			new_element.id = "";
-			new_element.innerHTML = text;
-			new_element.className = "div-box";
-			new_element.style.left = "" + x + "px";
-			new_element.style.top = "" + y + "px";
-			var canvas = document.getElementById("div-canvas");
-			if (canvas == null)
-				return;
-			canvas.appendChild(new_element);
-		}
-
-		function _on_click_apply() {
-
-			_hide_inputbox();
-
-			// _create_new_box();
-		}
 		</script>
 	</head>
 	<body onload="javascript: _onload_document();">
@@ -138,7 +83,7 @@
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="#">ぺたぺたするやつ</a>
+						<a class="navbar-brand" href="/">ぺたぺたするやつ</a>
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
@@ -178,8 +123,7 @@
 					<!-- Modal content-->
 					<div class="modal-content">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal"
-									onclick="javascript: _onclick_text_cancel();">&times;</button>
+							<button type="button" class="close" data-dismiss="modal" onclick="">&times;</button>
 							<h4 class="modal-title">コメントを入力</h4>
 						</div>
 						<div class="modal-body">
