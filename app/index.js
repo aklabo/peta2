@@ -73,7 +73,7 @@ function application() {
 		console.log("[trace] running with options " + JSON.stringify(options));
 
 		// アプリケーションの初期化
-		require("ejs")
+		require("ejs");
 		var express = require("express");
 		var app = express();
 		app.set('view engine', 'ejs');
