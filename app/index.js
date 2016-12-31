@@ -11,6 +11,7 @@
 function application() {
 
 	this._sessions = 0;
+
 	this._io = null;
 
 	this._on_new_peer = function(socket) {
@@ -62,7 +63,7 @@ function application() {
 		}
 	}.bind(this);
 
-	this._on_ready = function() {
+	this._handler_on_ready = function() {
 
 	}.bind(this);
 
@@ -91,7 +92,7 @@ function application() {
 		this._io.on('connection', this._on_new_peer);
 
 		// サーバーを起動
-		var server = http.listen(options["port"], this._on_ready);
+		var server = http.listen(options["port"], this._handler_on_ready);
 		console.log("Node.js is listening to port: " + server.address().port);
 	}.bind(this);
 }
@@ -114,7 +115,7 @@ function peer_connection(owner, io, socket) {
 	this._io = io;
 	this._socket = socket;
 
-	this.on_disconnect = function(m) {
+	this._on_disconnect = function(m) {
 
 		console.log('[TRACE] Bye... >> ((( ﾟ_ ﾟ)');
 		this._owner._sessions--;
@@ -122,15 +123,15 @@ function peer_connection(owner, io, socket) {
 		this._io.emit('sessions changed', {count: this._owner._sessions});
 	}.bind(this);
 
-	this.on_chat_message = function(m) {
+	this._on_chat_message = function(m) {
 
 		console.log('[TRACE] caught message: {x:' + m.x +", y:" + m.y + ", text:" + m.text + "} << (PEER)");
 		console.log('[TRACE] BROADCAST! >> (EVERYONE)');
 		this._io.emit('chat message', m);
 	}.bind(this);
 
-	socket.on('disconnect', this.on_disconnect);
-	socket.on('chat message', this.on_chat_message);
+	socket.on('disconnect', this._on_disconnect);
+	socket.on('chat message', this._on_chat_message);
 }
 
 
