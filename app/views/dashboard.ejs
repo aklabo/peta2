@@ -97,8 +97,13 @@
 
 			// Socket.IO による双方向通信を開始します。
 			__websocket = io();
+			// メッセージ受信(コメント貼り付け)
 			__websocket.on('chat message', function(m) {
 				_create_new_box(m.x, m.y, m.text);
+			});
+			// セッション数の変化
+			__websocket.on('sessions changed', function(m) {
+				$("#div-current-sessions").text("" + m.count + " session(s) alive.");
 			});
 
 			// コメントをロードします。
@@ -248,6 +253,9 @@
 			<!-- Main Content -->
 			<!-- ========================================================== -->
  			<div class="container theme-showcase" role="main">
+ 				<div id="div-sessions" style="float: left">
+ 					<div id="div-current-sessions">0</div>
+ 				</div>
 				<div id="div-canvas" class="div-canvas" onmouseup="javascript: _on_dragend_canvas();" onmousedown="javascript: _on_begindrag_canvas();">
 				</div>
 			</div>
