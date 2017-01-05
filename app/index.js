@@ -173,7 +173,7 @@ function _usage() {
 	console.log("");
 }
 
-function main() {
+function _main() {
 
 	const options = _read_commandline_arguments();
 	if (options['help']) {
@@ -185,4 +185,4 @@ function main() {
 	app.run(options);
 }
 
-main(process.argv);
+_main(process.argv);
