@@ -95,24 +95,41 @@
 
 		function _onload_document() {
 
-			// Socket.IO による双方向通信を開始します。
-			__websocket = io();
-			// メッセージ受信(コメント貼り付け)
-			__websocket.on('chat message', function(m) {
-				_create_new_box(m.x, m.y, m.text);
-			});
-			// セッション数の変化
-			__websocket.on('sessions changed', function(m) {
-				$("#div-current-sessions").text("" + m.count + " session(s) alive.");
-			});
+			//
+			// div-canvas
+			//
+			{
+				document.getElementById("div-canvas").onmousedown = _on_begindrag_canvas;
+				document.getElementById("div-canvas").onmouseup = _on_dragend_canvas;
+			}
 
+			//
+			// Socket.IO
+			//
+			{
+				// Socket.IO による双方向通信を開始します。
+				__websocket = io();
+				// メッセージ受信(コメント貼り付け)
+				__websocket.on('chat message', function(m) {
+					_create_new_box(m.x, m.y, m.text);
+				});
+				// セッション数の変化
+				__websocket.on('sessions changed', function(m) {
+					$("#div-current-sessions").text("" + m.count + " session(s) alive.");
+				});
+			}
+
+			//
 			// コメントをロードします。
-			_load_boxes();
+			//
+			{
+				_load_boxes();
+			}
 		}
 
 		var dragging_position = null;
 
-		function _on_begindrag_canvas() {
+		function _on_begindrag_canvas(e) {
 
 			//
 			// detecting canvas position.
@@ -121,19 +138,21 @@
 			if (canvas == null)
 				return;
 
-			var canvas_position = {
-				x: canvas.offsetLeft,
-				y: canvas.offsetTop
-			};
+			// var canvas_position = {
+			// 	x: canvas.offsetLeft,
+			// 	y: canvas.offsetTop
+			// };
+
+			// dragging_position = {
+			// 	x: window.event.x - canvas_position.x,
+			// 	y: window.event.y - canvas_position.y
+			// };
 
 			dragging_position = {
-				x: window.event.x - canvas_position.x,
-				y: window.event.y - canvas_position.y
-			};
-
-			dragging_position = {
-				x: window.event.x,
-				y: window.event.y
+				// Safe on [Firefox, Chrome]
+				x: e.screenX, /*window.event.x,*/
+				// Safe on [Firefox, Chrome]
+				y: e.clientY /*window.event.y*/
 			};
 		}
 
@@ -142,11 +161,12 @@
 			$("#myModal").modal("show");
 		}
 
-		function _on_dragend_canvas() {
+		function _on_dragend_canvas(e) {
 
 			if(dragging_position == null)
 				return;
-			var current_position = {x: window.event.x, y: window.event.y};
+			// var current_position = {x: window.event.x, y: window.event.y};
+			var current_position = {x: e.screenX, y: e.screenY};
 			if (!_show_inputbox())
 				return;
 		}
@@ -182,7 +202,7 @@
 			var new_element = document.createElement('DIV');
 			new_element.id = "";
 			new_element.innerHTML = text;
-			new_element.className = "well div-box";
+			new_element.className = "panel panel-default div-box";
 			new_element.style.left = "" + x + "px";
 			new_element.style.top = "" + y + "px";
 			var canvas = document.getElementById("div-canvas");
@@ -256,7 +276,7 @@
  				<div id="div-sessions" style="float: left">
  					<div id="div-current-sessions">0</div>
  				</div>
-				<div id="div-canvas" class="div-canvas" onmouseup="javascript: _on_dragend_canvas();" onmousedown="javascript: _on_begindrag_canvas();">
+				<div id="div-canvas" class="div-canvas">
 				</div>
 			</div>
 
