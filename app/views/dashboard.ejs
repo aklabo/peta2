@@ -58,7 +58,7 @@
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<!-- Optional theme -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" -->
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -71,10 +71,15 @@
 
 		<script>
 
-		var __websocket = null;
+		var _websocket = null;
+
+		var _dragging_position = null;
 
 		function _load_boxes() {
 
+			//
+			// 全てのコメントをロードします。
+			//
 			var request = {
 				type: 'GET',
 				data: JSON.stringify({}),
@@ -93,14 +98,27 @@
 			$.ajax(request);
 		}
 
+		function _on_chat_message(m) {
+
+			//
+			// コメントを貼りつけます。
+			//
+			_create_new_box(m.x, m.y, m.text);
+		}
+
+		function _on_session_changed(m) {
+
+			$("#div-current-sessions").text("" + m.count + " session(s) alive.");
+		}
+
 		function _onload_document() {
 
 			//
-			// div-canvas
+			// Events on div-canvas.
 			//
 			{
-				document.getElementById("div-canvas").onmousedown = _on_begindrag_canvas;
-				document.getElementById("div-canvas").onmouseup = _on_dragend_canvas;
+				$("#div-canvas").mousedown(_on_begindrag_canvas);
+				$("#div-canvas").mouseup(_on_dragend_canvas);
 			}
 
 			//
@@ -108,15 +126,11 @@
 			//
 			{
 				// Socket.IO による双方向通信を開始します。
-				__websocket = io();
+				_websocket = io();
 				// メッセージ受信(コメント貼り付け)
-				__websocket.on('chat message', function(m) {
-					_create_new_box(m.x, m.y, m.text);
-				});
+				_websocket.on('chat message', _on_chat_message);
 				// セッション数の変化
-				__websocket.on('sessions changed', function(m) {
-					$("#div-current-sessions").text("" + m.count + " session(s) alive.");
-				});
+				_websocket.on('sessions changed', _on_session_changed);
 			}
 
 			//
@@ -127,8 +141,6 @@
 			}
 		}
 
-		var dragging_position = null;
-
 		function _on_begindrag_canvas(e) {
 
 			//
@@ -138,67 +150,79 @@
 			if (canvas == null)
 				return;
 
-			// var canvas_position = {
-			// 	x: canvas.offsetLeft,
-			// 	y: canvas.offsetTop
-			// };
-
-			// dragging_position = {
-			// 	x: window.event.x - canvas_position.x,
-			// 	y: window.event.y - canvas_position.y
-			// };
-
-			dragging_position = {
-				// Safe on [Firefox, Chrome]
-				x: e.screenX, /*window.event.x,*/
-				// Safe on [Firefox, Chrome]
-				y: e.clientY /*window.event.y*/
+			//
+			// detecting dragging position.
+			//
+			_dragging_position = {
+				x: e.pageX,
+				y: e.pageY
 			};
+
+			//
+			// logging
+			//
+			if ((console) && (console.log)) {
+				console.log("CLICKED: {x: " + e.pageX + ", y: " + e.pageY + "}");
+			}
 		}
 
 		function _show_inputbox() {
 
+			//
+			// 入力ボックスを表示します。
+			//
 			$("#myModal").modal("show");
 		}
 
 		function _on_dragend_canvas(e) {
 
-			if(dragging_position == null)
+			if(_dragging_position == null)
 				return;
-			// var current_position = {x: window.event.x, y: window.event.y};
-			var current_position = {x: e.screenX, y: e.screenY};
+			var current_position = {x: e.pageX, y: e.pageY};
 			if (!_show_inputbox())
 				return;
 		}
 
 		function _onclick_text_cancel() {
 
+			//
+			// 入力ボックスを隠します。
+			//
 			_hide_inputbox();
 		}
 
 		function _hide_inputbox() {
 
+			//
+			// 入力コントロールを隠します。
+			//
 			$("#myModal").modal("hide");
 		}
 
 		function _pop_comment_value() {
 
+			//
+			// コメント入力を読み取り
+			//
 			var comment = $("#comment").val();
 			$("#comment").val("");
 			return comment;
 		}
 
 		function _broadcast_message(x, y, text) {
-			// var text = $('#m').val();
-			// socket.emit('chat message', text);
-			__websocket.emit('chat message', {x: x, y: y, text: text});
-			// erase
-			// $('#m').val('');
+
+			//
+			// サーバーへメッセージを送信
+			//
+			_websocket.emit('chat message', {x: x, y: y, text: text});
 			return false;
 		}
 
 		function _create_new_box(x, y, text) {
 
+			//
+			// コメントを貼り付け
+			//
 			var new_element = document.createElement('DIV');
 			new_element.id = "";
 			new_element.innerHTML = text;
@@ -213,20 +237,23 @@
 
 		function _on_click_apply() {
 
+			//
 			// 入力ボックスを隠します。
+			//
 			_hide_inputbox();
 
+			//
 			// ドラッグ開始位置を調べています。予期しない状態のときは現在の操作をキャンセルしています。
-			if (dragging_position == null) {
+			//
+			if (_dragging_position == null) {
 				alert("ASSERTION FAILURE");
 				return;
 			}
 
+			//
 			// 入力情報をサーバーへ通知します。
-			_broadcast_message(
-					dragging_position.x,
-					dragging_position.y,
-					_pop_comment_value());
+			//
+			_broadcast_message(_dragging_position.x, _dragging_position.y, _pop_comment_value());
 		}
 		</script>
 	</head>
