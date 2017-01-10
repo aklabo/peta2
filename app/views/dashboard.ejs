@@ -42,7 +42,6 @@
 					console.log('success');
 					console.log(JSON.stringify(data));
 					$.each (data["data"], function(i, e) {
-						console.log(e);
 						_create_new_box(e.x, e.y, e.text);
 					});
 				}
@@ -107,15 +106,15 @@
 			// detecting dragging position.
 			//
 			_dragging_position = {
-				x: e.pageX,
-				y: e.pageY
+				x: e.pageX - canvas.offsetLeft,
+				y: e.pageY - canvas.offsetTop
 			};
 
 			//
 			// logging
 			//
 			if ((console) && (console.log)) {
-				console.log("CLICKED: {x: " + e.pageX + ", y: " + e.pageY + "}");
+				console.log("[CLICKED] " + JSON.stringify(_dragging_position));
 			}
 		}
 
@@ -131,7 +130,7 @@
 
 			if(_dragging_position == null)
 				return;
-			var current_position = {x: e.pageX, y: e.pageY};
+			// var current_position = {x: e.pageX, y: e.pageY};
 			if (!_show_inputbox())
 				return;
 		}
@@ -172,18 +171,23 @@
 
 		function _create_new_box(x, y, text) {
 
-			//
-			// コメントを貼り付け
-			//
-			var new_element = document.createElement('DIV');
-			new_element.id = "";
-			new_element.innerHTML = text;
-			new_element.className = "div-box";
-			new_element.style.left = "" + x + "px";
-			new_element.style.top = "" + y + "px";
+			if ((console) && (console.log))
+				console.log("[PASTE] " + JSON.stringify({left: x, top: y}));
+
 			var canvas = document.getElementById("div-canvas");
 			if (canvas == null)
 				return;
+
+			//
+			// コメントを貼り付け
+			//
+			var new_element = document.createElement('div');
+			new_element.id = "";
+			// new_element.className = "div-box";
+			new_element.setAttribute("class", "div-box");
+			new_element.style.left = "" + x + "px";
+			new_element.style.top = "" + y + "px";
+			new_element.innerHTML = text;
 			canvas.appendChild(new_element);
 		}
 
