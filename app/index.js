@@ -151,7 +151,7 @@ function _load_json_file(path) {
 
 	require("json");
 	var fs = require("fs");
-	return JSON.parse(fs.readFileSync(path, "utf8"));
+	return JSON.parse(fs.readFileSync(path, "utf-8"));
 }
 
 function _read_commandline_arguments() {
