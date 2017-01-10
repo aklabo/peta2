@@ -98,7 +98,8 @@
 			//
 			// detecting canvas position.
 			//
-			var canvas = document.getElementById("div-canvas");
+			// var canvas = document.getElementById("div-canvas");
+			canvas = $("#div-canvas");
 			if (canvas == null)
 				return;
 
@@ -106,14 +107,15 @@
 			// detecting dragging position.
 			//
 			_dragging_position = {
-				x: e.pageX - canvas.offsetLeft,
-				y: e.pageY - canvas.offsetTop
+				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
+				y: e.pageY - canvas.offset().top + canvas.scrollTop()
 			};
 
 			//
 			// logging
 			//
 			if ((console) && (console.log)) {
+				console.log("canvas: " + JSON.stringify({x: canvas.scrollLeft(), y: canvas.scrollTop()}));
 				console.log("[CLICKED] " + JSON.stringify(_dragging_position));
 			}
 		}
