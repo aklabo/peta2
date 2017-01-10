@@ -78,6 +78,7 @@ function application() {
 		var express = require("express");
 		var app = express();
 		app.set('view engine', 'ejs');
+		app.use('/static', express.static('public'));
 		var http = require('http').Server(app);
 		this._io = require('socket.io')(http);
 

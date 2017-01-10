@@ -5,53 +5,6 @@
 		<title>peta2</title>
 		<meta charset="utf-8">
 
-		<style>
-		html {
-			width: 100%;
-			height: 100%;
-		}
-
-		body {
-			width: 100%;
-			height: 100%;
-			padding-top: 70px;
-		}
-
-		.div-canvas {
-			height: 500px;
-			width: 100%;
-			border-style: solid;
-			border-width: 1px;
-			border-color: #999999;
-			overflow: scroll;
-		}
-
-		.div-box {
-			width: 100px;
-			height: 100px;
-			background-color: #f0f0f0;
-			border-color: #101010;
-			border-style: solid;
-			border-width: 1px;
-			position: absolute;
-		}
-
-		.div-input-box {
-			background-color: #ffffff;
-			position: absolute;
-			visibility: hidden;
-			width: 300px;
-			height: 200px;
-			left: 0px;
-			top: 0px;
-		}
-
-		.btn-default-xxxxxxxxxx {
-			/*height: 24px;*/
-			font-size: 14px;
-		}
-		</style>
-
 		<!-- jQuery 3.x -->
 		<!-- script src="/js/jquery-3.1.1.min.js"></script -->
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -61,13 +14,13 @@
 		<!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" -->
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
 		<!-- React 諦め中... -->
 		<!-- script src="https://unpkg.com/react@15/dist/react.min.js"></script -->
 		<!-- script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script -->
-
 		<!-- Socket.IO CDN -->
 		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+		<!-- system css -->
+		<link rel="stylesheet" href="/static/css/common.css">
 
 		<script>
 
@@ -215,7 +168,6 @@
 			// サーバーへメッセージを送信
 			//
 			_websocket.emit('chat message', {x: x, y: y, text: text});
-			return false;
 		}
 
 		function _create_new_box(x, y, text) {
@@ -292,14 +244,14 @@
 								</ul>
 							</li>
 						</ul>
-					</div><!--/.nav-collapse -->
+					</div>
 				</div>
 			</nav>
 
 			<!-- ========================================================== -->
 			<!-- Main Content -->
 			<!-- ========================================================== -->
- 			<div class="container theme-showcase" role="main">
+ 			<div class="container theme-showcase div-main-container" role="main">
  				<div id="div-sessions" style="float: left">
  					<div id="div-current-sessions">0</div>
  				</div>
