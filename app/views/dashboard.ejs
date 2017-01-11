@@ -26,13 +26,9 @@
 
 		var _websocket = null;
 
-		var _dragging_position = null;
+		var _dragging_start_position = null;
 
 		function _load_boxes() {
-
-			//
-			// 全てのコメントをロードします。
-			//
 			var request = {
 				type: 'GET',
 				data: JSON.stringify({}),
@@ -42,40 +38,26 @@
 					console.log('success');
 					console.log(JSON.stringify(data));
 					$.each (data["data"], function(i, e) {
-						_create_new_box(e.x, e.y, e.text);
+						_paste_new_box(e.x, e.y, e.text);
 					});
 				}
 			}
-
 			$.ajax(request);
 		}
 
 		function _on_chat_message(m) {
-
-			//
-			// コメントを貼りつけます。
-			//
-			_create_new_box(m.x, m.y, m.text);
+			_paste_new_box(m.x, m.y, m.text);
 		}
 
 		function _on_session_changed(m) {
-
 			$("#div-current-sessions").text("" + m.count + " session(s) alive.");
 		}
 
 		function _onload_document() {
-
-			//
-			// Events on div-canvas.
-			//
 			{
 				$("#div-canvas").mousedown(_on_begindrag_canvas);
 				$("#div-canvas").mouseup(_on_dragend_canvas);
 			}
-
-			//
-			// Socket.IO
-			//
 			{
 				// Socket.IO による双方向通信を開始します。
 				_websocket = io();
@@ -84,108 +66,63 @@
 				// セッション数の変化
 				_websocket.on('sessions changed', _on_session_changed);
 			}
-
-			//
-			// コメントをロードします。
-			//
 			{
 				_load_boxes();
 			}
 		}
 
 		function _on_begindrag_canvas(e) {
-
-			//
-			// detecting canvas position.
-			//
-			// var canvas = document.getElementById("div-canvas");
 			canvas = $("#div-canvas");
 			if (canvas == null)
 				return;
-
-			//
-			// detecting dragging position.
-			//
-			_dragging_position = {
+			_dragging_start_position = {
 				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
 				y: e.pageY - canvas.offset().top + canvas.scrollTop()
 			};
-
-			//
-			// logging
-			//
 			if ((console) && (console.log)) {
 				console.log("canvas: " + JSON.stringify({x: canvas.scrollLeft(), y: canvas.scrollTop()}));
-				console.log("[CLICKED] " + JSON.stringify(_dragging_position));
+				console.log("[CLICKED] " + JSON.stringify(_dragging_start_position));
 			}
 		}
 
 		function _show_inputbox() {
-
-			//
-			// 入力ボックスを表示します。
-			//
 			$("#myModal").modal("show");
 		}
 
 		function _on_dragend_canvas(e) {
-
-			if(_dragging_position == null)
+			if(_dragging_start_position == null)
 				return;
 			if (!_show_inputbox())
 				return;
 		}
 
 		function _onclick_text_cancel() {
-
-			//
-			// 入力ボックスを隠します。
-			//
 			_hide_inputbox();
 		}
 
 		function _hide_inputbox() {
-
-			//
-			// 入力コントロールを隠します。
-			//
 			$("#myModal").modal("hide");
 		}
 
 		function _pop_comment_value() {
-
-			//
-			// コメント入力を読み取り
-			//
 			var comment = $("#comment").val();
 			$("#comment").val("");
 			return comment;
 		}
 
 		function _broadcast_message(x, y, text) {
-
-			//
-			// サーバーへメッセージを送信
-			//
 			_websocket.emit('chat message', {x: x, y: y, text: text});
 		}
 
-		function _create_new_box(x, y, text) {
-
+		function _paste_new_box(x, y, text) {
 			if ((console) && (console.log))
 				console.log("[PASTE] " + JSON.stringify({left: x, top: y}));
-
 			var canvas = document.getElementById("div-canvas");
 			if (canvas == null)
 				return;
-
-			//
-			// コメントを貼り付け
-			//
 			var new_element = document.createElement('div');
 			new_element.id = "";
-			// new_element.className = "div-box";
-			new_element.setAttribute("class", "div-box");
+			new_element.className = "div-box";
 			new_element.style.left = "" + x + "px";
 			new_element.style.top = "" + y + "px";
 			new_element.innerHTML = text;
@@ -193,24 +130,12 @@
 		}
 
 		function _on_click_apply() {
-
-			//
-			// 入力ボックスを隠します。
-			//
 			_hide_inputbox();
-
-			//
-			// ドラッグ開始位置を調べています。予期しない状態のときは現在の操作をキャンセルしています。
-			//
-			if (_dragging_position == null) {
+			if (_dragging_start_position == null) {
 				alert("ASSERTION FAILURE");
 				return;
 			}
-
-			//
-			// 入力情報をサーバーへ通知します。
-			//
-			_broadcast_message(_dragging_position.x, _dragging_position.y, _pop_comment_value());
+			_broadcast_message(_dragging_start_position.x, _dragging_start_position.y, _pop_comment_value());
 		}
 		</script>
 	</head>
@@ -235,9 +160,7 @@
 							<li class="active"><a href="/">Home</a></li>
 							<li class="inactive"><a href="/preferences">Preferences</a></li>
 							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown"
-										role="button" aria-haspopup="true"
-										aria-expanded="false">Dropdown <span class="caret"></span></a>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
 								<ul class="dropdown-menu">
 									<li><a href="#">Action</a></li>
 									<li><a href="#">Another action</a></li>
@@ -282,8 +205,7 @@
 					<!-- Modal content-->
 					<div class="modal-content">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal"
-									onclick="javascript: _onclick_text_cancel();">&times;</button>
+							<button type="button" class="close" data-dismiss="modal" onclick="javascript: _onclick_text_cancel();">&times;</button>
 							<h4 class="modal-title">コメントを入力</h4>
 						</div>
 						<div class="modal-body">

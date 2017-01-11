@@ -94,7 +94,11 @@ function application() {
 
 		// サーバーを起動
 		var server = http.listen(options["port"], this._handler_on_ready);
-		console.log("Node.js is listening to port: " + server.address().port);
+
+		if (server.address() != null)
+			console.log("Node.js is listening to port: " + server.address().port);
+		else
+			console.log("Node.js is listening to port: (unknown)");
 	}.bind(this);
 }
 
@@ -129,6 +133,7 @@ function peer_connection(owner, io, socket) {
 		console.log('[TRACE] caught message: {x:' + m.x +", y:" + m.y + ", text:" + m.text + "} << (PEER)");
 		console.log('[TRACE] BROADCAST! >> (EVERYONE)');
 		this._io.emit('chat message', m);
+		_save_box(m);
 	}.bind(this);
 
 	socket.on('disconnect', this._on_disconnect);
@@ -146,6 +151,25 @@ function peer_connection(owner, io, socket) {
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+function _save_box(m) {
+
+	try {
+		var tree_object = _load_json_file("/tmp/.peta2-boxes-data.json");
+		require("json");
+		boxes_array = tree_object["data"];
+		boxes_array.push(m);
+		var fs = require("fs");
+		var json_data = JSON.stringify(tree_object, null, "\t");
+		fs.writeFileSync("/tmp/.peta2-boxes-data.json", json_data, {encoding: "utf-8"});
+		// var json = ("/tmp/.peta2-boxes-data.json");
+		// res.json(json);
+	}
+	catch (err) {
+		console.log(err);
+		console.log("[error] json データの保存に失敗しています。");
+	}
+}
 
 function _load_json_file(path) {
 
