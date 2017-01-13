@@ -18,6 +18,7 @@
     "socket.io": "~1.7.2",
     "websocket": "~1.0.23",
     "json": "~9.0.4",
-    "command-line-args": "~3.0.5"
+    "command-line-args": "~3.0.5",
+    "uuid": "~3.0.1"
   }
 }
