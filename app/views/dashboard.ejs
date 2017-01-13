@@ -80,7 +80,6 @@
 				y: e.pageY - canvas.offset().top + canvas.scrollTop()
 			};
 			if ((console) && (console.log)) {
-				console.log("canvas: " + JSON.stringify({x: canvas.scrollLeft(), y: canvas.scrollTop()}));
 				console.log("[CLICKED] " + JSON.stringify(_dragging_start_position));
 			}
 		}
@@ -114,19 +113,54 @@
 			_websocket.emit('chat message', {x: x, y: y, text: text});
 		}
 
+		function _onmouseover_box(e) {
+			if ((console) && (console.log)) {
+				console.log(JSON.stringify(e));
+				console.log(e.currentTarget);
+			}
+			$(e.target).css({"border-width": "2px", "border-color": "#503030"});
+		}
+
+		function _onmouseout_box(e) {
+			if ((console) && (console.log)) {
+				// console.log(JSON.stringify(e));
+			}
+			$(e.target).css({"border-width": "1px", "border-color": "#101010"});
+		}
+
 		function _paste_new_box(x, y, text) {
 			if ((console) && (console.log))
 				console.log("[PASTE] " + JSON.stringify({left: x, top: y}));
 			var canvas = document.getElementById("div-canvas");
 			if (canvas == null)
 				return;
-			var new_element = document.createElement('div');
-			new_element.id = "";
-			new_element.className = "div-box";
-			new_element.style.left = "" + x + "px";
-			new_element.style.top = "" + y + "px";
-			new_element.innerHTML = text;
-			canvas.appendChild(new_element);
+			if (false) {
+				var new_element = document.createElement('div');
+				new_element.id = "";
+				new_element.onmouseover = _onmouseover_box;
+				new_element.onmouseout = _onmouseout_box;
+				new_element.className = "div-box";
+				new_element.style.left = "" + x + "px";
+				new_element.style.top = "" + y + "px";
+				new_element.innerHTML = text;
+				canvas.appendChild(new_element);
+			}
+			if (true) {
+				var new_element = $(
+						"<div>",
+						{
+							id: "",
+							class: "div-box",
+							text: text,
+							//mouseover: _onmouseover_box,
+							//mouseout: _onmouseout_box,
+							mouseenter: _onmouseover_box,
+							mouseleave: _onmouseout_box
+						}
+				);
+				new_element.css({left: "" + x + "px", top: "" + y + "px"});
+				new_element.appendTo(canvas);
+			}
 		}
 
 		function _on_click_apply() {
@@ -141,6 +175,7 @@
 	</head>
 	<body onload="javascript: _onload_document();">
 		<form>
+
 			<!-- ========================================================== -->
 			<!-- Navigation -->
 			<!-- ========================================================== -->
@@ -187,16 +222,6 @@
 					<div id="div-canvas" class="div-canvas">
 					</div>
 				</div>
-			</div>
-
-			<!-- ========================================================== -->
-			<!-- Modal Sample -->
-			<!-- ========================================================== -->
-			<div id="div-input-box" class="div-input-box">
-				コメント: <input type="text" name="txt-content" class="txt-content">
-				<br>
-				<button type="button" class="btn btn-sm btn-default" onclick="javascript: _on_click_apply();">apply</button>
-				<button type="button" class="btn btn-sm btn-default" onclick="javascript: _onclick_text_cancel();">cancel</button>
 			</div>
 
 			<!-- ========================================================== -->
