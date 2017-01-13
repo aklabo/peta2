@@ -35,10 +35,9 @@
 				contentType: 'application/json',
 				url: '/boxes',
 				success: function(data) {
-					console.log('success');
-					console.log(JSON.stringify(data));
 					$.each (data["data"], function(i, e) {
-						_paste_new_box(e.x, e.y, e.text);
+						console.log("[message] " + JSON.stringify(e));
+						_paste_new_box(e);
 					});
 				}
 			}
@@ -46,7 +45,8 @@
 		}
 
 		function _on_chat_message(m) {
-			_paste_new_box(m.x, m.y, m.text);
+			console.log("[message] " + JSON.stringify(m));
+			_paste_new_box(m);
 		}
 
 		function _on_session_changed(m) {
@@ -139,37 +139,36 @@
 			target.offset({left: current_position.left + 1, top: current_position.top + 1});
 		}
 
-		function _paste_new_box(x, y, text) {
-			if ((console) && (console.log))
-				console.log("[PASTE] " + JSON.stringify({left: x, top: y}));
+		function _paste_new_box(m) {
 			var canvas = document.getElementById("div-canvas");
 			if (canvas == null)
 				return;
 			if (false) {
 				var new_element = document.createElement('div');
-				new_element.id = "";
+				new_element.id = m.id;
 				new_element.onmouseover = _onmouseover_box;
 				new_element.onmouseout = _onmouseout_box;
 				new_element.className = "div-box";
-				new_element.style.left = "" + x + "px";
-				new_element.style.top = "" + y + "px";
-				new_element.innerHTML = text;
+				new_element.style.left = "" + m.x + "px";
+				new_element.style.top = "" + m.y + "px";
+				new_element.innerHTML = m.text;
 				canvas.appendChild(new_element);
 			}
 			if (true) {
 				var new_element = $(
 						"<div>",
 						{
-							id: "",
+							id: m.id,
 							class: "div-box",
-							text: text,
+							text: m.text,
 							//mouseover: _onmouseover_box,
 							//mouseout: _onmouseout_box,
 							mouseenter: _onmouseover_box,
 							mouseleave: _onmouseout_box
 						}
 				);
-				new_element.css({left: "" + x + "px", top: "" + y + "px"});
+				// new_element.css({left: "" + m.x + "px", top: "" + m.y + "px"});
+				new_element.offset({left: m.x, top: m.y});
 				new_element.appendTo(canvas);
 			}
 		}

@@ -16,10 +16,10 @@ function application() {
 
 	this._on_new_peer = function(socket) {
 
-		console.log('[TRACE] Welcome! << (ﾟ _ﾟ )))');
+		console.log("[TRACE] Welcome! << (ﾟ _ﾟ )))");
 		this._sessions++;
 		console.log("(" + this._sessions + ") connection(s) alive.");
-		this._io.emit('sessions changed', {count: this._sessions});
+		this._io.emit("sessions changed", {count: this._sessions});
 		var peer = new peer_connection(this, this._io, socket);
 	}.bind(this);
 
@@ -77,10 +77,10 @@ function application() {
 		require("ejs");
 		var express = require("express");
 		var app = express();
-		app.set('view engine', 'ejs');
-		app.use('/static', express.static('public'));
-		var http = require('http').Server(app);
-		this._io = require('socket.io')(http);
+		app.set("view engine", "ejs");
+		app.use("/static", express.static("public"));
+		var http = require("http").Server(app);
+		this._io = require("socket.io")(http);
 
 		// ルーティング設定
 		app.get("/", this._handler_simple_root);
@@ -90,7 +90,7 @@ function application() {
 		app.get("/boxes", this._handler_load_boxex);
 
 		// Socket.IO のイベント設定
-		this._io.on('connection', this._on_new_peer);
+		this._io.on("connection", this._on_new_peer);
 
 		// サーバーを起動
 		var server = http.listen(options["port"], this._handler_on_ready);
@@ -122,22 +122,23 @@ function peer_connection(owner, io, socket) {
 
 	this._on_disconnect = function(m) {
 
-		console.log('[TRACE] Bye... >> ((( ﾟ_ ﾟ)');
+		console.log("[TRACE] Bye... >> ((( ﾟ_ ﾟ)");
 		this._owner._sessions--;
 		console.log("(" + this._owner._sessions + ") connection(s) alive.");
-		this._io.emit('sessions changed', {count: this._owner._sessions});
+		this._io.emit("sessions changed", {count: this._owner._sessions});
 	}.bind(this);
 
 	this._on_chat_message = function(m) {
-
-		console.log('[TRACE] caught message: {x:' + m.x +", y:" + m.y + ", text:" + m.text + "} << (PEER)");
-		console.log('[TRACE] BROADCAST! >> (EVERYONE)');
-		this._io.emit('chat message', m);
+		const uuid4 = require("uuid/v4");
+		console.log("[TRACE] caught message: {x:" + m.x +", y:" + m.y + ", text:" + m.text + "} << (PEER)");
+		console.log("[TRACE] BROADCAST! >> (EVERYONE)");
+		m.id = uuid4();
 		_save_box(m);
+		this._io.emit("chat message", m);
 	}.bind(this);
 
-	socket.on('disconnect', this._on_disconnect);
-	socket.on('chat message', this._on_chat_message);
+	socket.on("disconnect", this._on_disconnect);
+	socket.on("chat message", this._on_chat_message);
 }
 
 
@@ -180,11 +181,11 @@ function _load_json_file(path) {
 
 function _read_commandline_arguments() {
 
-	const args = require('command-line-args');
+	const args = require("command-line-args");
 	const def = [
-		{name: 'help', alias: 'h', type: Boolean},
-		{name: 'host', type: String, defaultValue: "127.0.0.1"},
-		{name: 'port', alias: 'p', type: Number, defaultValue: 80}
+		{name: "help", alias: "h", type: Boolean},
+		{name: "host", type: String, defaultValue: "127.0.0.1"},
+		{name: "port", alias: "p", type: Number, defaultValue: 80}
 	];
 	return args(def);
 }
@@ -201,7 +202,7 @@ function _usage() {
 function _main() {
 
 	const options = _read_commandline_arguments();
-	if (options['help']) {
+	if (options["help"]) {
 		_usage();
 		return;
 	}
