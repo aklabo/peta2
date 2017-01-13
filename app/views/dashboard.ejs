@@ -118,14 +118,25 @@
 				console.log(JSON.stringify(e));
 				console.log(e.currentTarget);
 			}
-			$(e.target).css({"border-width": "2px", "border-color": "#503030"});
+			var target = $(e.target);
+			target.css("border-width", "2px");
+			target.css("border-color", "#903030");
+			target.width(target.width() + 2);
+			var current_position = target.offset();
+			target.offset({left: current_position.left - 1, top: current_position.top - 1});
+			target.appendTo(target.parent());
 		}
 
 		function _onmouseout_box(e) {
 			if ((console) && (console.log)) {
 				// console.log(JSON.stringify(e));
 			}
-			$(e.target).css({"border-width": "1px", "border-color": "#101010"});
+			var target = $(e.target);
+			target.css("border-width", "1px");
+			target.css("border-color", "#101010");
+			target.width(target.width() - 2);
+			var current_position = target.offset();
+			target.offset({left: current_position.left + 1, top: current_position.top + 1});
 		}
 
 		function _paste_new_box(x, y, text) {
