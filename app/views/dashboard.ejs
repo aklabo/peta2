@@ -131,11 +131,15 @@
 				console.log(e.currentTarget);
 			}
 			var target = $(e.target);
+			// 枠をハイライト
 			target.css("border-width", "2px");
 			target.css("border-color", "#903030");
 			target.width(target.width() + 2);
+			target.height(target.height() + 2);
+			// 位置を調整
 			var current_position = target.offset();
 			target.offset({left: current_position.left - 1, top: current_position.top - 1});
+			// 最前面に移動
 			target.appendTo(target.parent());
 		}
 
@@ -144,9 +148,12 @@
 				// console.log(JSON.stringify(e));
 			}
 			var target = $(e.target);
+			// 枠をデフォルトに
 			target.css("border-width", "1px");
 			target.css("border-color", "#101010");
 			target.width(target.width() - 2);
+			target.height(target.height() - 2);
+			// 位置を調整
 			var current_position = target.offset();
 			target.offset({left: current_position.left + 1, top: current_position.top + 1});
 		}
@@ -236,7 +243,7 @@
 			<!-- ========================================================== -->
 			<!-- Main Content -->
 			<!-- ========================================================== -->
-			<div class="container div-main-container" role="main" style="padding-bottom: 50px">
+			<div class="container div-main-container" role="main" style="">
 				<div id="div-sessions" style="">
 					<div id="div-current-sessions">0</div>
 				</div>
