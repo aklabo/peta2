@@ -2,8 +2,9 @@
 <html>
 	<head>
 
-		<title>peta2</title>
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<title>peta2</title>
 
 		<!-- jQuery 3.x -->
 		<!-- script src="/js/jquery-3.1.1.min.js"></script -->
@@ -29,6 +30,7 @@
 		var _dragging_start_position = null;
 
 		function _load_boxes() {
+
 			var request = {
 				type: 'GET',
 				data: JSON.stringify({}),
@@ -41,23 +43,29 @@
 					});
 				}
 			}
+
 			$.ajax(request);
 		}
 
 		function _on_chat_message(m) {
+
 			console.log("[message] " + JSON.stringify(m));
+
 			_paste_new_box(m);
 		}
 
 		function _on_session_changed(m) {
+
 			$("#div-current-sessions").text("" + m.count + " session(s) alive.");
 		}
 
 		function _onload_document() {
+
 			{
 				$("#div-canvas").mousedown(_on_begindrag_canvas);
 				$("#div-canvas").mouseup(_on_dragend_canvas);
 			}
+
 			{
 				// Socket.IO による双方向通信を開始します。
 				_websocket = io();
@@ -66,19 +74,23 @@
 				// セッション数の変化
 				_websocket.on('sessions changed', _on_session_changed);
 			}
+
 			{
 				_load_boxes();
 			}
 		}
 
 		function _on_begindrag_canvas(e) {
+
 			canvas = $("#div-canvas");
 			if (canvas == null)
 				return;
+
 			_dragging_start_position = {
 				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
 				y: e.pageY - canvas.offset().top + canvas.scrollTop()
 			};
+
 			if ((console) && (console.log)) {
 				console.log("[CLICKED] " + JSON.stringify(_dragging_start_position));
 			}
@@ -159,7 +171,7 @@
 						"<div>",
 						{
 							id: m.id,
-							class: "div-box",
+							class: "div-box panel",
 							text: m.text,
 							//mouseover: _onmouseover_box,
 							//mouseout: _onmouseout_box,
@@ -167,7 +179,7 @@
 							mouseleave: _onmouseout_box
 						}
 				);
-				// new_element.css({left: "" + m.x + "px", top: "" + m.y + "px"});
+				new_element.css({"background-color": m.background_color});
 				new_element.offset({left: m.x, top: m.y});
 				new_element.appendTo(canvas);
 			}
@@ -224,15 +236,22 @@
 			<!-- ========================================================== -->
 			<!-- Main Content -->
 			<!-- ========================================================== -->
-			<div class="container theme-showcase div-main-container" role="main">
+			<div class="container div-main-container" role="main" style="padding-bottom: 50px">
 				<div id="div-sessions" style="">
 					<div id="div-current-sessions">0</div>
 				</div>
-				<div style="height: 100%; width: 100%; overflow: auto; border-style: solid; border-width: 1px; border-color: #909090">
+				<div style="height: 100%; width: 100%; overflow: auto; -webkit-overflow-scrolling: touch; border-style: solid; border-width: 1px; border-color: #909090">
 					<div id="div-canvas" class="div-canvas">
 					</div>
 				</div>
+				<div style="clear: both; height: 80px">
+				</div>
 			</div>
+			<footer class="footer" style="background-color: #e0e0e0">
+				<div class="container" style="line-height: 100px; height: 100px; vertical-align: middle">
+					<p class="text-muted" style="text-align: center">Fork it on <a href="https://github.com/aklabo/peta2" target="_blank" style="text-decoration: none">GitHub <img src="/static/images/GitHub-Mark-64px.png"></a></p>
+				</div>
+			</footer>
 
 			<!-- ========================================================== -->
 			<!-- Modal -->

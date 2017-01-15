@@ -8,6 +8,29 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+var util = {
+
+	zero_pad: function(color) {
+		if (color.length == 1)
+			return "0" + color;
+		return color;
+	},
+
+	rgb: function(r, g, b) {
+		r = (r).toString(16);
+		g = (g).toString(16);
+		b = (b).toString(16);
+		return "#" + util.zero_pad(r) + util.zero_pad(g) + util.zero_pad(b);
+	},
+
+	generate_new_color: function() {
+		var r = 200 + Math.floor(Math.random() * 56);
+		var g = 200 + Math.floor(Math.random() * 56);
+		var b = 200 + Math.floor(Math.random() * 56);
+		return util.rgb(r, g, b);
+	}
+};
+
 function application() {
 
 	this._sessions = 0;
@@ -133,6 +156,7 @@ function peer_connection(owner, io, socket) {
 		console.log("[TRACE] caught message: {x:" + m.x +", y:" + m.y + ", text:" + m.text + "} << (PEER)");
 		console.log("[TRACE] BROADCAST! >> (EVERYONE)");
 		m.id = uuid4();
+		m.background_color = util.generate_new_color();
 		_save_box(m);
 		this._io.emit("chat message", m);
 	}.bind(this);
