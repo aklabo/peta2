@@ -25,7 +25,7 @@ http://expressjs.com
 
 - JavaScript template engine.
 
-http://www.embeddedjs.com
+http://ejs.co
 
 #Socket.IO
 
