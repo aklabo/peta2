@@ -31,6 +31,10 @@
 
 		function _load_boxes() {
 
+			if ((console) && (console.log)) {
+				console.log("サーバーにメッセージを問い合わせています...");
+			}
+
 			var request = {
 				type: 'GET',
 				data: JSON.stringify({}),
@@ -49,12 +53,16 @@
 
 		function _on_chat_message(m) {
 
-			console.log("[message] " + JSON.stringify(m));
+			console.log("[着信] " + JSON.stringify(m));
 
 			_paste_new_box(m);
 		}
 
 		function _on_session_changed(m) {
+
+			if ((console) && (console.log)) {
+				console.log("アクティブなユーザー数が変化しました。(" + m.count + ")");
+			}
 
 			$("#div-current-sessions").text("" + m.count + " session(s) alive.");
 		}
@@ -82,6 +90,10 @@
 
 		function _on_begindrag_canvas(e) {
 
+			if ((console) && (console.log)) {
+				console.log("ドラッグ操作が開始されました。");
+			}
+
 			canvas = $("#div-canvas");
 			if (canvas == null)
 				return;
@@ -97,10 +109,16 @@
 		}
 
 		function _show_inputbox() {
+
 			$("#myModal").modal("show");
 		}
 
 		function _on_dragend_canvas(e) {
+
+			if ((console) && (console.log)) {
+				console.log("ドラッグ操作が終了されました。");
+			}
+
 			if(_dragging_start_position == null)
 				return;
 			if (!_show_inputbox())
@@ -108,30 +126,46 @@
 		}
 
 		function _onclick_text_cancel() {
+
+			if ((console) && (console.log)) {
+				console.log("[clicked] cancel");
+			}
+
 			_hide_inputbox();
 		}
 
 		function _hide_inputbox() {
+
 			$("#myModal").modal("hide");
 		}
 
 		function _pop_comment_value() {
+
 			var comment = $("#comment").val();
 			$("#comment").val("");
 			return comment;
 		}
 
 		function _broadcast_message(x, y, text) {
+
+			if (text == "")
+				return;
 			_websocket.emit('chat message', {x: x, y: y, text: text});
 		}
 
+		var _pooled = {};
+
 		function _onmouseover_box(e) {
+
 			if ((console) && (console.log)) {
-				console.log(JSON.stringify(e));
-				console.log(e.currentTarget);
+				console.log("[event][mouseover] " + JSON.stringify({text: e.currentTarget.innerHTML}));
+				// console.log(JSON.stringify(e));
+				// console.log(e.currentTarget);
 			}
+
 			var target = $(e.target);
 			// 枠をハイライト
+			// TODO: 要素自体を変更するのではなく、最前面に枠を表示したり消したりする方がよさそう。
 			target.css("border-width", "2px");
 			target.css("border-color", "#903030");
 			target.width(target.width() + 2);
@@ -144,9 +178,11 @@
 		}
 
 		function _onmouseout_box(e) {
+
 			if ((console) && (console.log)) {
-				// console.log(JSON.stringify(e));
+				console.log("[event][mouseout] " + JSON.stringify({text: e.currentTarget.innerHTML}));
 			}
+
 			var target = $(e.target);
 			// 枠をデフォルトに
 			target.css("border-width", "1px");
@@ -159,6 +195,7 @@
 		}
 
 		function _paste_new_box(m) {
+
 			var canvas = document.getElementById("div-canvas");
 			if (canvas == null)
 				return;
@@ -193,12 +230,17 @@
 		}
 
 		function _on_click_apply() {
+
+			var message_text = _pop_comment_value();
+			if (message_text == "") {
+				return;
+			}
 			_hide_inputbox();
 			if (_dragging_start_position == null) {
 				alert("ASSERTION FAILURE");
 				return;
 			}
-			_broadcast_message(_dragging_start_position.x, _dragging_start_position.y, _pop_comment_value());
+			_broadcast_message(_dragging_start_position.x, _dragging_start_position.y, message_text);
 		}
 		</script>
 	</head>
