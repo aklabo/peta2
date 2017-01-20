@@ -86,6 +86,10 @@
 			{
 				_load_boxes();
 			}
+
+			{
+				// $('body').fadeIn(2000);
+			}
 		}
 
 		function _on_begindrag_canvas(e) {
@@ -211,21 +215,20 @@
 				canvas.appendChild(new_element);
 			}
 			if (true) {
-				var new_element = $(
-						"<div>",
-						{
-							id: m.id,
-							class: "div-box panel",
-							text: m.text,
-							//mouseover: _onmouseover_box,
-							//mouseout: _onmouseout_box,
-							mouseenter: _onmouseover_box,
-							mouseleave: _onmouseout_box
-						}
-				);
+				var initial_attributes = {
+					id: m.id,
+					class: "div-box panel",
+					text: m.text,
+					//mouseover: _onmouseover_box,
+					//mouseout: _onmouseout_box,
+					mouseenter: _onmouseover_box,
+					mouseleave: _onmouseout_box
+				};
+				var new_element = $("<div>", initial_attributes);
 				new_element.css({"background-color": m.background_color});
 				new_element.offset({left: m.x, top: m.y});
 				new_element.appendTo(canvas);
+				new_element.fadeIn(1000);
 			}
 		}
 
@@ -244,7 +247,7 @@
 		}
 		</script>
 	</head>
-	<body onload="javascript: _onload_document();">
+	<body style="" onload="javascript: _onload_document();">
 		<form>
 
 			<!-- ========================================================== -->

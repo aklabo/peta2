@@ -45,6 +45,7 @@ form {
 	position: absolute;
 	overflow: auto;
 	font-family: "游ゴシック体", "メイリオ", "ヒラギノ角ゴファミリー";
+	display: none;
 }
 
 .div-input-box {
