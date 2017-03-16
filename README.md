@@ -3,7 +3,7 @@
 - A simple interactive application with Node.js + express + ejs + Socket.IO.
 - Any kind of contribution by anyone in this organization are welcomed.
 
-#Getting Started
+# Getting Started
 
 - In case of EC2.
 
