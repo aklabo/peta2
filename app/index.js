@@ -39,9 +39,9 @@ function application() {
 
 	this._on_new_peer = function(socket) {
 
-		console.log("[TRACE] Welcome! << (ﾟ _ﾟ )))");
+		_log("[TRACE] Welcome! << (ﾟ _ﾟ )))");
 		this._sessions++;
-		console.log("(" + this._sessions + ") connection(s) alive.");
+		_log("(" + this._sessions + ") connection(s) alive.");
 		this._io.emit("sessions changed", {count: this._sessions});
 		var peer = new peer_connection(this, this._io, socket);
 	}.bind(this);
@@ -80,8 +80,8 @@ function application() {
 			res.json(json);
 		}
 		catch (err) {
-			console.log(err);
-			console.log("[error] json データの読み込みに失敗しています。");
+			_log(err);
+			_log("[error] json データの読み込みに失敗しています。");
 			res.json({});
 		}
 	}.bind(this);
@@ -92,9 +92,9 @@ function application() {
 
 	this.run = function(options) {
 
-		console.log("[trace] ### START ###");
-		console.log("[trace] runnung on [" + __dirname + "]");
-		console.log("[trace] running with options " + JSON.stringify(options));
+		_log("[trace] ### START ###");
+		_log("[trace] runnung on [" + __dirname + "]");
+		_log("[trace] running with options " + JSON.stringify(options));
 
 		// アプリケーションの初期化
 		require("ejs");
@@ -119,9 +119,9 @@ function application() {
 		var server = http.listen(options["port"], this._handler_on_ready);
 
 		if (server.address() != null)
-			console.log("Node.js is listening to port: " + server.address().port);
+			_log("Node.js is listening to port: " + server.address().port);
 		else
-			console.log("Node.js is listening to port: (unknown)");
+			_log("Node.js is listening to port: (unknown)");
 	}.bind(this);
 }
 
@@ -145,16 +145,16 @@ function peer_connection(owner, io, socket) {
 
 	this._on_disconnect = function(m) {
 
-		console.log("[TRACE] Bye... >> ((( ﾟ_ ﾟ)");
+		_log("[TRACE] Bye... >> ((( ﾟ_ ﾟ)");
 		this._owner._sessions--;
-		console.log("(" + this._owner._sessions + ") connection(s) alive.");
+		_log("(" + this._owner._sessions + ") connection(s) alive.");
 		this._io.emit("sessions changed", {count: this._owner._sessions});
 	}.bind(this);
 
 	this._on_chat_message = function(m) {
 		const uuid4 = require("uuid/v4");
-		console.log("[TRACE] caught message: {x:" + m.x +", y:" + m.y + ", text:" + m.text + "} << (PEER)");
-		console.log("[TRACE] BROADCAST! >> (EVERYONE)");
+		_log("[TRACE] caught message: {x:" + m.x +", y:" + m.y + ", text:" + m.text + "} << (PEER)");
+		_log("[TRACE] BROADCAST! >> (EVERYONE)");
 		m.id = uuid4();
 		m.background_color = util.generate_new_color();
 		_save_box(m);
@@ -182,6 +182,9 @@ function _save_box(m) {
 	try {
 		var tree_object = _load_json_file("/tmp/.peta2-boxes-data.json");
 		require("json");
+		if (tree_object["data"] == null) {
+			tree_object["data"] = [];
+		}
 		boxes_array = tree_object["data"];
 		boxes_array.push(m);
 		var fs = require("fs");
@@ -191,16 +194,36 @@ function _save_box(m) {
 		// res.json(json);
 	}
 	catch (err) {
-		console.log(err);
-		console.log("[error] json データの保存に失敗しています。");
+		_log(err);
+		_log("[error] json データの保存に失敗しています。");
+	}
+}
+
+function _log(message) {
+
+	try {
+		require("json");
+		var fs = require("fs");
+		fs.writeFileSync("/tmp/peta2.log", message + "\n", {encoding: "utf-8"});
+	}
+	catch (ex) {
+		console.log(ex);
+		console.log("[ERROR] ログ出力に失敗しています。");
 	}
 }
 
 function _load_json_file(path) {
 
-	require("json");
-	var fs = require("fs");
-	return JSON.parse(fs.readFileSync(path, "utf-8"));
+	try {
+		require("json");
+		var fs = require("fs");
+		return JSON.parse(fs.readFileSync(path, "utf-8"));
+	}
+	catch (ex) {
+		_log(ex);
+		_log("[info] ファイルが存在しません。");
+		return {}
+	}
 }
 
 function _read_commandline_arguments() {
