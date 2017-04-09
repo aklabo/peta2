@@ -3,7 +3,7 @@
 - A simple interactive application with Node.js + express + ejs + Socket.IO.
 - Any kind of contribution by anyone in this organization are welcomed.
 
-#Getting Started
+# Getting Started
 
 - In case of EC2.
 
@@ -15,19 +15,19 @@ $ npm install
 $ node index.js
 ```
 
-#Express
+# Express
 
 - Simple web application framework for Node.js.
 
 http://expressjs.com
 
-#ejs
+# ejs
 
 - JavaScript template engine.
 
 http://ejs.co
 
-#Socket.IO
+# Socket.IO
 
 - Easy WebSocket implementation for Node.js.
 
