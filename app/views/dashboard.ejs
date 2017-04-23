@@ -67,12 +67,69 @@
 			$("#div-current-sessions").text("" + m.count + " session(s) alive.");
 		}
 
-		function _onload_document() {
+		function _on_drag_canvas(e) {
 
-			{
-				$("#div-canvas").mousedown(_on_begindrag_canvas);
-				$("#div-canvas").mouseup(_on_dragend_canvas);
-			}
+			canvas = $("#div-canvas");
+			if (canvas == null)
+				return;
+			var cursor_position = {
+				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
+				y: e.pageY - canvas.offset().top + canvas.scrollTop()
+			};
+			console.log("[event][drop][canvas] " + JSON.stringify(cursor_position));
+		}
+
+		function _on_dragenter_canvas(e) {
+
+			canvas = $("#div-canvas");
+			if (canvas == null)
+				return;
+			var cursor_position = {
+				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
+				y: e.pageY - canvas.offset().top + canvas.scrollTop()
+			};
+			console.log("[event][dragenter][canvas] " + JSON.stringify(cursor_position));
+		}
+
+		function _on_dragover_canvas(e) {
+
+			canvas = $("#div-canvas");
+			if (canvas == null)
+				return;
+			var cursor_position = {
+				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
+				y: e.pageY - canvas.offset().top + canvas.scrollTop()
+			};
+			console.log("[event][dragover][canvas] " + JSON.stringify(cursor_position));
+			e.preventDefault();
+		}
+
+		function _on_dragleave_canvas(e) {
+
+			canvas = $("#div-canvas");
+			if (canvas == null)
+				return;
+			var cursor_position = {
+				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
+				y: e.pageY - canvas.offset().top + canvas.scrollTop()
+			};
+			console.log("[event][dragleave][canvas] " + JSON.stringify(cursor_position));
+		}
+
+		function _on_drop_canvas(e) {
+
+			canvas = $("#div-canvas");
+			if (canvas == null)
+				return;
+			var cursor_position = {
+				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
+				y: e.pageY - canvas.offset().top + canvas.scrollTop()
+			};
+			console.log("[event][drop][canvas] " + JSON.stringify(cursor_position));
+			e.preventDefault();
+		}
+
+		function _onload_document() {
 
 			{
 				// Socket.IO による双方向通信を開始します。
@@ -90,12 +147,56 @@
 			{
 				// $('body').fadeIn(2000);
 			}
+
+			{
+				$("#div-canvas").mousedown(_on_begindrag_canvas);
+				$("#div-canvas").mouseup(_on_dragend_canvas);
+				$("#div-canvas").mousemove(_on_mousemove_canvas);
+				// $("#div-canvas").drag(_on_drag_canvas);
+				// $("#div-canvas").dragenter(_on_dragenter_canvas);
+				// $("#div-canvas").dragover(_on_dragover_canvas);
+				// $("#div-canvas").dragleave(_on_dragleave_canvas);
+				// $("#div-canvas").drop(_on_drop_canvas);
+				// $("#body").mousemove(_on_mousemove_body);
+			}
+		}
+
+		function _on_mousemove_body(e) {
+
+			canvas = $("#div-canvas");
+			if (canvas == null)
+				return;
+
+			var cursor_position = {
+				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
+				y: e.pageY - canvas.offset().top + canvas.scrollTop()
+			};
+
+			if ((console) && (console.log)) {
+				console.log("[event][mousemove][body] cursor_position: " + JSON.stringify(cursor_position));
+			}
+		}
+
+		function _on_mousemove_canvas(e) {
+
+			canvas = $("#div-canvas");
+			if (canvas == null)
+				return;
+
+			var cursor_position = {
+				x: e.pageX - canvas.offset().left + canvas.scrollLeft(),
+				y: e.pageY - canvas.offset().top + canvas.scrollTop()
+			};
+
+			if ((console) && (console.log)) {
+				console.log("[event][mousemove][canvas] cursor_position: " + JSON.stringify(cursor_position));
+			}
 		}
 
 		function _on_begindrag_canvas(e) {
 
 			if ((console) && (console.log)) {
-				console.log("ドラッグ操作が開始されました。");
+				console.log("[event][mousedown] キャンバス内でマウスボタンが押されました。");
 			}
 
 			canvas = $("#div-canvas");
@@ -198,6 +299,32 @@
 			target.offset({left: current_position.left + 1, top: current_position.top + 1});
 		}
 
+		function _on_dragstart_box(e) {
+
+			console.log("[event][dragstart][box] " + e);
+			return false;
+		}
+
+		function _on_dragenter_box(e) {
+
+			console.log("[event][dragenter][box] " + e);
+		}
+
+		function _on_dragover_box(e) {
+
+			console.log("[event][dragover][box] " + e);
+		}
+
+		function _on_dragleave_box(e) {
+
+			console.log("[event][dragleave][box] " + e);
+		}
+
+		function _on_mousemove_box(e) {
+
+			console.log("[event][mousemove][box] " + e);
+		}
+
 		function _paste_new_box(m) {
 
 			var canvas = document.getElementById("div-canvas");
@@ -222,13 +349,21 @@
 					//mouseover: _onmouseover_box,
 					//mouseout: _onmouseout_box,
 					mouseenter: _onmouseover_box,
-					mouseleave: _onmouseout_box
+					mouseleave: _onmouseout_box,
+					mousemove: _on_mousemove_box,
+					// draggable="true"
+					draggable: true,
+					dragstart: _on_dragstart_box,
+					dragenter: _on_dragenter_box,
+					dragover: _on_dragover_box,
+					dragleave: _on_dragleave_box,
 				};
 				var new_element = $("<div>", initial_attributes);
 				new_element.css({"background-color": m.background_color});
 				new_element.offset({left: m.x, top: m.y});
 				new_element.appendTo(canvas);
 				new_element.fadeIn(1000);
+				// new_element.draggable(); // with jQuery UI
 			}
 		}
 
@@ -247,7 +382,7 @@
 		}
 		</script>
 	</head>
-	<body style="" onload="javascript: _onload_document();">
+	<body id="body" onload="javascript: _onload_document();">
 		<form>
 
 			<!-- ========================================================== -->
